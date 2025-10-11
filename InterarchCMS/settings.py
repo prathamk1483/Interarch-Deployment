@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-#8z63ga2-ejs3((p0r$x79n13o@3-=i$tg_sq)j(0_j%1@zqtd
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost","127.0.0.1"]
+ALLOWED_HOSTS = ["localhost","127.0.0.1","interarch.share.zrok.io"]
 
 
 # Application definition
