@@ -12,9 +12,18 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from pathlib import Path
+from cryptography.fernet import Fernet
 from dotenv import load_dotenv
 
+BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
+
+KEY = os.getenv("TEMPLATE_KEY")
+if not KEY:
+    raise SystemExit("Set TEMPLATE_KEY in .env before running Django.")
+
+FERNET = Fernet(KEY.encode())
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,6 +41,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["localhost","127.0.0.1","interarch.share.zrok.io"]
 
+# This key is important ->  iELexOrVelrIn64NsozuXn0gbAiuIJ67jHoXQr0_LD4=
 
 # Application definition
 
@@ -57,16 +67,32 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'InterarchCMS.urls'
 
+print("THis is the base_DIR :", BASE_DIR)
+def decrypt_template(path):
+    """Decrypts .enc templates on the fly"""
+    if path.endswith(".enc"):
+        with open(path, "rb") as f:
+            data = FERNET.decrypt(f.read())
+            return data.decode("utf-8")
+    else:
+        with open(path, "r", encoding="utf-8") as f:
+            return f.read()
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [BASE_DIR / "CMS" / "templates"],
+        "APP_DIRS": False,  # must be False when using custom loaders
+        "OPTIONS": {
+            # Use our encrypted loader
+            "loaders": [
+                ("CMS.templateLoader.EncryptedTemplateLoader", [BASE_DIR / "CMS" / "templates"]),
+            ],
+            # ✅ Context processors required by admin
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",    # Required for admin nav sidebar
+                "django.contrib.auth.context_processors.auth",   # Required for auth features
+                "django.contrib.messages.context_processors.messages",  # Required for messages
             ],
         },
     },

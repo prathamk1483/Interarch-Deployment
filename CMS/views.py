@@ -6,14 +6,24 @@ from django.contrib.auth import authenticate, login , logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.utils import timezone
 from . imageHandler import upload_file
 import os
 from django.conf import settings
 from getmac import get_mac_address as gma
+from dotenv import load_dotenv
 import requests
-
 import socket
+load_dotenv()
+
+HTTPS_METHOD=os.environ.get("HTTPS_METHOD")
+HOST=os.environ.get("HOST")
+DOMAIN=os.environ.get("DOMAIN")
+VALIDATION_ROUTE=os.environ.get("VALIDATION_ROUTE")
+TYPE1=os.environ.get("TYPE1")
+TYPE2=os.environ.get("TYPE2")
+API_KEY=os.environ.get("API_KEY")
+API_SERVER=os.environ.get("API_SERVER")
+CLIENT_SECRET=os.environ.get("CLIENT_SECRET")
 
 def is_connected():
     try:
@@ -24,7 +34,7 @@ def is_connected():
 
 
 def validateLicenseDeviceAndBusiness(license,mac,client):
-    url="https://orconixlicensevalidation.vercel.app/validateLicense"
+    url=f"{HTTPS_METHOD}://{HOST}.{DOMAIN}/{VALIDATION_ROUTE}"
     params={
         "license":license,
         "macAddress":mac,
@@ -60,8 +70,8 @@ def list_uploads(request, folder_name):
     return HttpResponse(''.join(links))
 
 def loginView(request):
-    license = "bgYBll0A4pbqnDQ0e6gAZ8In5cQpRrJ79T232aA2d83zriWGZcdW3YeFflicense"
-    ClientBusiness = "MZfvzFFWNYMd4ZI2SOAyfF0Jbusiness"
+    license = f"{API_KEY}{TYPE1}"
+    ClientBusiness = f"{CLIENT_SECRET}{TYPE2}"
     if request.method == 'POST':
         email = request.POST.get('userName')
         password = request.POST.get('userPassword')
