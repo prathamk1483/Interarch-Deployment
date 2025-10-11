@@ -1,0 +1,105 @@
+{% extends "CRUDmodule/base.html" %}
+{% block style %}
+<style>
+        .container {
+          margin-top: 50px;
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          justify-content: center;
+          align-items: center;
+          gap: 30px;
+        }
+
+        /* Card styling with iPhone-like animations and border */
+        .card {
+          width: 18rem;
+          border: 2px solid #d1d1d1; /* Thin gray border */
+          border-radius: 20px;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+          overflow: hidden;
+          transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+          background-color: #ffffff;
+          cursor: pointer;
+          transform-origin: center;
+          height:60vh
+        }
+
+        /* Hover effect */
+        .card:hover {
+          transform: scale(1.04);
+          box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Image styling */
+        .card-img-top {
+          height: 200px;
+          object-fit: contain;
+          padding: 15px;
+          transition: transform 0.4s ease;
+        }
+
+        /* Slight image motion on hover */
+        .card:hover .card-img-top {
+          transform: scale(1.05);
+        }
+
+        /* Center content inside card body */
+        .card-body {
+          text-align: center;
+        }
+
+        /* Button styling */
+        .card .btn {
+          transition: all 0.3s ease-in-out;
+          border-radius: 12px;
+          font-weight: 500;
+          margin-top: 10px;
+        }
+
+        /* Hover effect for button */
+        .card .btn:hover {
+          transform: scale(1.05);
+          box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+        }
+
+</style>  
+{% endblock %}
+
+{% block body %}
+<div class="container">
+  <div class="card" style="width: 18rem;">
+      <img src="https://png.pngtree.com/png-vector/20220608/ourmid/pngtree-lamp-outline-icon-on-white-background-png-image_4933513.png" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h4 class="card-title">Create Client Profile</h4>
+        <p class="card-text">Create the client's profile (save the data of the customer to the database).</p>
+        <a href="{% url 'createUserPage' %}" class="btn btn-primary">Create User</a>
+      </div>
+  </div>
+  <div class="card" style="width: 18rem;">
+      <img src="https://thumbs.dreamstime.com/b/search-document-icon-vector-graphic-design-logo-web-site-social-media-mobile-app-ui-illustration-search-document-icon-vector-188120432.jpg" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h4 class="card-title">Search a client</h4>
+        <p class="card-text">Search for the existing client's information in the database, else create the profile.</p>
+        <a href="{% url 'userSearchPage' %}" class="btn btn-primary">Search Client</a>
+      </div>
+  </div>
+  <div class="card" style="width: 18rem;">
+      <img src="https://static.vecteezy.com/system/resources/previews/047/847/943/non_2x/update-calendar-icon-design-in-filled-and-outlined-style-vector.jpg" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h4 class="card-title">Update Client Profile</h4>
+        <p class="card-text">Update the client's information - Add a change in services ,requirements ,Payments,etc.</p>
+        <a href="{% url 'userUpdatePage' %}" class="btn btn-primary">Update Client</a>
+      </div>
+  </div>
+  <div class="card" style="width: 18rem;">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcRsx7d_lIls9rSRPghlrKNnOcj-2NeBte2g&s" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h4 class="card-title">Delete Client Profile</h4>
+        <p class="card-text">Delete the client's information from database ,(This step is dangerous ,move with caution).</p>
+        <a href="{% url 'userDeletePage' %}" class="btn btn-danger">Delete Profile</a>
+      </div>
+  </div>
+</div>
+{% endblock %}

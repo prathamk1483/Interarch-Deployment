@@ -1,0 +1,644 @@
+{% extends 'CRUDmodule/base.html' %}
+{% block style %}
+  <style>
+    .form-section {
+      background-color: #f8f9fa;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .form-section h3 {
+      color: #0d6efd;
+      margin-bottom: 20px;
+    }
+    .dynamic-field {
+      margin-bottom: 10px;
+    }
+    .payment-mode {
+      margin-bottom: 10px;
+    }
+    /* LOADER CSS */
+    #loaderOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(255, 255, 255, 0.85);
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .loader-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .loader {
+      width: 50px;
+      height: 50px;
+      border: 6px solid #ccc;
+      border-top: 6px solid #0d6efd;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 15px;
+    }
+
+    #loaderOverlay p {
+      font-size: 1.2rem;
+      color: #0d6efd;
+      font-weight: 500;
+      margin: 0;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+{% endblock %}
+{% block body %}
+  <div class="container my-5">
+    <h1 class="text-center mb-4">Customer Profile Creation Form</h1>
+    <form action="{% url 'createClient' %}" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <!-- Customer Details Section -->
+      <div class="form-section">
+        <h3>Client Details</h3>
+        <div class="row">
+          <div class="col-md-4">
+            <label for="full_names" class="form-label">Names - ( Comma "," separated )</label>
+            <input type="text" autocomplete="off" class="form-control" id="fullNames" name="full_names" required>
+          </div>
+        </div>
+
+
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <label for="referredBy" class="form-label">Referred By</label>
+            <input type="text" class="form-control" name="customerRefferedBy" id="referredBy">
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Email Section -->
+      <div class="form-section">
+        <h3>Emails</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <label for="primaryEmail" class="form-label">Email - ( Comma "," separated )</label>
+            <input type="text" class="form-control" id="primaryEmail" name="primary_email" required>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phone Number Section -->
+      <div class="form-section">
+        <h3>Contact Numbers</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <label for="primaryPhone" class="form-label">Enter Phone numbers - ( Comma "," separated )</label>
+            <input type="text" class="form-control" id="primaryPhone" name="phone_numbers" required>
+          </div>
+        </div>
+        
+      </div>
+
+      <!-- Address Section -->
+      <div class="form-section">
+        <h3>Address</h3>
+        <div class="row">
+          <div class="col-md-12">
+            <label for="completeAddress" class="form-label">Complete Address</label>
+            <textarea class="form-control" autocomplete="off" id="completeAddress" name="complete_address" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-4">
+            <label for="city" class="form-label">City</label>
+            <input type="text" class="form-control" name="city" id="city">
+          </div>
+          <div class="col-md-4">
+            <label for="state" class="form-label">State</label>
+            <input type="text" class="form-control" name="state" id="state">
+          </div>
+          <div class="col-md-4">
+            <label for="pincode" class="form-label">Pincode</label>
+            <input type="text" class="form-control" name="pincode" id="pincode">
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-4">
+            <label for="landmark" class="form-label">Landmark</label>
+            <input type="text" class="form-control" name = "landmark" id="landmark">
+          </div>
+        </div>
+      </div>
+
+      <!-- Plot Details Section -->
+      <div class="form-section">
+        <h3>Plot Details</h3>
+        <div class="row">
+          <div class="col-md-4">
+            <label for="plotNumber" class="form-label">Plot Number</label>
+            <input type="text" defaultValue="0" class="form-control" name="customerPlotNumber" id="plotNumber">
+          </div>
+          <div class="col-md-4">
+            <label for="plotArea" class="form-label">Plot Area (sq. ft.)</label>
+            <input type="text" defaultValue=0 class="form-control" name="plot_area" id="plotArea">
+          </div>
+        </div>
+      
+        <div class="row mt-4">
+          <div class="col-md-4">
+            <label for="plotLengthEast" class="form-label">Plot Length (East)</label>
+            <input type="text" defaultValue="0" class="form-control" name="plotEast" id="plotLengthEast">
+          </div>
+          <div class="col-md-4">
+            <label for="plotLengthWest" class="form-label">Plot Length (West)</label>
+            <input type="text" defaultValue="0" class="form-control" name="plotWest" id="plotLengthWest">
+          </div>
+          <div class="col-md-4">
+            <label for="plotLengthNorth" class="form-label">Plot Length (North)</label>
+            <input type="text" defaultValue="0" class="form-control" name="plotNorth" id="plotLengthNorth">
+          </div>
+          <div class="col-md-4 mt-3">
+            <label for="plotLengthSouth" class="form-label">Plot Length (South)</label>
+            <input type="text" defaultValue="0" class="form-control" name="plotSouth" id="plotLengthSouth">
+          </div>
+      
+          <div class="col-md-4 mt-3">
+            <label for="roadDirection" class="form-label">Road Direction</label>
+            <select class="form-select" name="roadDirection" id="roadDirection">
+              <option value="">Select Direction</option>
+              <option value="North">North</option>
+              <option value="South">South</option>
+              <option value="East">East</option>
+              <option value="West">West</option>
+              <option value="North-East">North-East</option>
+              <option value="North-West">North-West</option>
+              <option value="South-East">South-East</option>
+              <option value="South-West">South-West</option>
+            </select>
+          </div>
+      
+          <div class="col-md-4 mt-3">
+            <label for="roadWidth" class="form-label">Road Width</label>
+            <input type="text" defaultValue="0" class="form-control" name="roadWidth" id="roadWidth">
+          </div>
+        </div>
+      </div>
+      
+
+      <!-- Client Requirements Section -->
+      <div class="form-section">
+        <h3>Client Requirements</h3>
+        <input type="text" class="form-control" name="requirements" id="">
+      </div>
+
+<!-- Services Section -->
+<div class="form-section">
+    <h3>Services</h3>
+    <div class="row">
+  
+      <div class="col-md-15">
+        <div class="form-check">
+          <input class="form-check-input service-checkbox" type="checkbox" name="Architecture_Planning" id="s1">
+          <label class="form-check-label" for="s1">Architecture Planning</label>
+          <div class="service-detail mt-2" id="detail_s1" style="display: none;">
+            <input type="text" class="form-control" name="Architecture_Planning_detail" placeholder="Enter details for Architecture Planning">
+          </div>
+        </div>
+      </div>
+  
+      <div class="col-md-15">
+        <div class="form-check">
+          <input class="form-check-input service-checkbox" type="checkbox" name="RCC_Design" id="s2">
+          <label class="form-check-label" for="s2">RCC design</label>
+          <div class="service-detail mt-2" id="detail_s2" style="display: none;">
+            <input type="text" class="form-control" name="RCC_Design_detail" placeholder="Enter details for RCC Design">
+          </div>
+        </div>
+      </div>
+  
+      <div class="col-md-15">
+        <div class="form-check">
+          <input class="form-check-input service-checkbox" type="checkbox" name="T3D_Elevation" id="s3">
+          <label class="form-check-label" for="s3">3D elevation</label>
+          <div class="service-detail mt-2" id="detail_s3" style="display: none;">
+            <input type="text" class="form-control" name="T3D_Elevation_detail" placeholder="Enter details for 3D Elevation">
+          </div>
+        </div>
+      </div>
+  
+      <div class="col-md-15">
+        <div class="form-check">
+          <input class="form-check-input service-checkbox" type="checkbox" name="Blueprint" id="s4">
+          <label class="form-check-label" for="s4">BluePrint</label>
+          <div class="service-detail mt-2" id="detail_s4" style="display: none;">
+            <input type="text" class="form-control" name="Blueprint_detail" placeholder="Enter details for BluePrint">
+          </div>
+        </div>
+      </div>
+  
+      <div class="col-md-15">
+        <div class="form-check">
+          <input class="form-check-input service-checkbox" type="checkbox" name="Municipal_Data" id="s5">
+          <label class="form-check-label" for="s5">Municipal Data / Liasoning / Other docs</label>
+          <div class="service-detail mt-2" id="detail_s5" style="display: none;">
+            <input type="text" class="form-control" name="Municipal_Data_detail" placeholder="Enter details for Municipal Data">
+          </div>
+        </div>
+      </div>
+  
+      <div class="col-md-15">
+        <div class="form-check">
+          <input class="form-check-input service-checkbox" type="checkbox" name="Estimations" id="s6">
+          <label class="form-check-label" for="s6">Estimations</label>
+          <div class="service-detail mt-2" id="detail_s6" style="display: none;">
+            <input type="text" class="form-control" name="Estimations_detail" placeholder="Enter details for Estimations">
+          </div>
+        </div>
+      </div>
+  
+      <div class="col-md-15">
+        <div class="form-check">
+          <input class="form-check-input service-checkbox" type="checkbox" name="Site_Visits" id="s7">
+          <label class="form-check-label" for="s7">Site Visits</label>
+          <div class="service-detail mt-2" id="detail_s7" style="display: none;">
+            <input type="text" class="form-control" name="Site_Visits_detail" placeholder="Enter details for Site Visits">
+          </div>
+        </div>
+      </div>
+  
+      <div class="col-md-15">
+        <div class="form-check">
+          <input class="form-check-input service-checkbox" type="checkbox" name="Interior" id="s8">
+          <label class="form-check-label" for="s8">Interior</label>
+          <div class="service-detail mt-2" id="detail_s8" style="display: none;">
+            <input type="text" class="form-control" name="Interior_detail" placeholder="Enter details for Interior">
+          </div>
+        </div>
+      </div>
+  
+    </div>
+  </div>
+  <div class="form-section">
+        <h3>Special Notes</h3>
+        <div class="form-floating">
+          <textarea name="specialNotes" class="form-control" placeholder="Notes" id="floatingTextarea2" style="height: 100px">{{ data.specialNotes }}</textarea>
+          <label for="floatingTextarea2">Notes</label>
+        </div>
+      </div>
+  <div class="form-section">
+    <h3>Image Upload</h3>
+    <div>
+      <input class="form-control form-control-lg" id="formFileLg" type="file" name="imageUpload">
+    </div>
+  </div>
+  <!-- Total Bill Section -->
+  <div class="form-section">
+    <h3>Total Charges as Per Discussion</h3>
+        <div class="row mt-8">
+          <div class="col-md-6">
+            <label for="totalAmount" class="form-label">Enter Total Amount</label>
+            <input type="text" class="form-control" name="customerTotalAmount" id="totalAmount">
+          </div>
+        </div>
+        
+        <div class="form-check" style="display: none;">
+          <input class="form-check-input service-checkbox" type="checkbox" name="discountPercentage" id="discountPercentage">
+          <label class="form-check-label" for="discountPercentage">Percentage</label>
+          <div class="service-detail mt-2" id="detail_discountPercentage" style="display: none;">
+            <input type="text" class="form-control" name="Discount_Percentage_detail" id="discountPercentValue" placeholder="Enter Discount Percentage">
+          </div>
+        </div>
+        <div class="col-md-15 mt-3">
+      
+          <div class="form-check">
+            <input class="form-check-input service-checkbox" type="checkbox" name="discountAmount" id="discountAmount">
+            <label class="form-check-label" for="discountAmount">Discount Amount</label>
+            <div class="service-detail mt-2" id="detail_discountAmount" style="display: none;">
+              <input type="text" value=0 class="form-control" name="Discount_Amount_detail" id="discountAmountValue" placeholder="Enter Discount Amount">
+            </div>
+          </div>
+      
+          <hr>
+      
+          <div class="row mt-4">
+            <div class="col-md-6">
+              <label for="payableAmount" class="form-label">Total Payable Amount:</label>
+              <input type="text" class="form-control" name="customerTotalPayableAmount" id="payableAmount" readonly>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+          <!-- Payment Details Section -->
+          <div class="form-section">
+            <h3>Payment Details</h3>
+            <div id="paymentTransactionsContainer">
+              <div id="paymentTransactionsContainer">
+      <div class="payment-mode mt-4">
+        <div class="mb-3">
+          <label class="form-label">Payment Mode</label>
+          <select class="form-select" name="paymentMode" required>
+            <option value="UPI">UPI</option>
+            <option value="Cash">Cash</option>
+            <option value="BankTransfer">Bank Transfer</option>
+            <option value="Cheque">Cheque</option>
+          </select>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-4">
+            <label class="form-label">Payment Status</label>
+            <select class="form-select" name="paymentStatus" required>
+              <option value="Pending">Pending</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Payment Date</label>
+            <input type="date" class="form-control" name="paymentDate" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Payment Amount</label>
+            <input type="number" class="form-control" name="paymentAmount" required oninput="updateTotalAmountPaid()">
+          </div>
+        </div>
+      </div>
+    </div>
+          <!-- Dynamic fields for payment transactions will be added here -->
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm mt-2" onclick="addPaymentTransaction()">Add Payment</button>
+        <!-- Hidden input for total amount paid -->
+        <input type="hidden" id="totalAmountPaid" name="totalAmountPaid" value="0">
+      </div>
+      
+      <div class="row mt-4">
+        <div class="col-md-6">
+          <label for="payableAmount" class="form-label">Total Amount Paid:</label>
+          <input type="text" class="form-control" name="TotalAmountPaids" id="amountPaid" readonly>
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-md-6">
+          <label for="payableAmount" class="form-label">Total Amount Due:</label>
+          <input type="text" class="form-control" name="TotalAmountDue" id="amountDue" readonly>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="text-center mt-4">
+        <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+      </div>
+    </form>
+  </div>
+    <div id="loaderOverlay" style="display: none;">
+      <div class="loader-content">
+        <div class="loader"></div>
+        <p>Submitting your form...</p>
+      </div>
+    </div>
+{% endblock %}
+{% block script %}
+<!-- In the Payment Section adding atleast 1 payment is mandatory -->
+ <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.querySelector("form");
+  const paymentContainer = document.getElementById("paymentTransactionsContainer");
+
+  // Create and style warning message
+  const paymentWarning = document.createElement("small");
+  paymentWarning.textContent = "⚠️ Adding an advance payment is compulsory.";
+  paymentWarning.style.color = "red";
+  paymentWarning.style.display = "none";
+  paymentWarning.id = "payment-warning";
+  paymentWarning.style.marginTop = "8px";
+  paymentContainer.parentNode.insertBefore(paymentWarning, paymentContainer.nextSibling);
+
+  form.addEventListener("submit", function (e) {
+    const paymentInputs = paymentContainer.querySelectorAll("input[type='text'], input[type='number'], input[type='date']");
+    const hasValidPayment = Array.from(paymentInputs).some(input => input.value.trim() !== "");
+
+    if (!hasValidPayment) {
+      e.preventDefault();
+      paymentWarning.style.display = "block";
+      paymentContainer.scrollIntoView({ behavior: "smooth", block: "center" });
+    } else {
+      paymentWarning.style.display = "none";
+    }
+  });
+});
+
+ </script>
+<!-- INPUT VALIDATION/FIXATIONS LOGICS -->
+
+<!-- 1. Phone No Validation -->
+ <script>
+  document.addEventListener("DOMContentLoaded", function () {
+  const phoneInput = document.getElementById("primaryPhone");
+  // Create and style the warning element
+  const warning = document.createElement("small");
+  warning.textContent = "Minimum length of each phone number should be 10 digits.";
+  warning.style.color = "red";
+  warning.style.display = "none";
+  warning.classList.add("phone-warning");
+  phoneInput.parentNode.appendChild(warning);
+
+  phoneInput.addEventListener("input", function () {
+    const phoneNumbers = phoneInput.value.split(",").map(num => num.trim());
+    const isInvalid = phoneNumbers.some(num => num.length > 0 && num.length < 10);
+
+    if (isInvalid) {
+      warning.style.display = "block";
+    } else {
+      warning.style.display = "none";
+    }
+  });
+});
+</script>
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const checkboxes = document.querySelectorAll(".service-checkbox");
+
+  checkboxes.forEach(checkbox => {
+    checkbox.addEventListener("change", function () {
+      const detailBox = document.getElementById("detail_" + this.id);
+      if (detailBox) {
+        detailBox.style.display = this.checked ? "block" : "none";
+      }
+    });
+  });
+});
+function addPaymentTransaction() {
+  const container = document.getElementById("paymentTransactionsContainer");
+  const newField = document.createElement("div");
+  newField.classList.add("dynamic-field", "form-section");
+  newField.innerHTML = `
+    <div class="payment-mode">
+      <label class="form-label">Payment Mode</label>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="paymentMode" value="UPI">
+        <label class="form-check-label" for="upi">UPI</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="paymentMode" value="Cash">
+        <label class="form-check-label" for="cash">Cash</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="paymentMode" value="BankTransfer">
+        <label class="form-check-label" for="bankTransfer">Bank Transfer</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="paymentMode" value="Cheque">
+        <label class="form-check-label" for="cheque">Cheque</label>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-4">
+        <label for="paymentStatus" class="form-label">Payment Status</label>
+        <select class="form-select" name="paymentStatus">
+          <option value="Pending">Pending</option>
+          <option value="Completed">Completed</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label for="paymentDate" class="form-label">Payment Date</label>
+        <input type="date" class="form-control" name="paymentDate">
+      </div>
+      <div class="col-md-4">
+        <label for="paymentAmount" class="form-label">Payment Amount</label>
+        <input type="number" class="form-control" name="paymentAmount" oninput="updateTotalAmountPaid()">
+      </div>
+    </div>
+    <button type="button" class="btn btn-danger btn-sm mt-2" onclick="removeField(this)">Remove</button>
+  `;
+  container.appendChild(newField);
+  updateTotalAmountPaid(); // Update the total amount paid when a new transaction is added
+}
+
+// Function to calculate and update the total amount paid
+function updateTotalAmountPaid() {
+  const paymentAmountInputs = document.querySelectorAll('input[name="paymentAmount"]');
+  let totalAmountPaid = 0;
+
+  // Sum all payment amounts
+  paymentAmountInputs.forEach(input => {
+    const amount = parseFloat(input.value) || 0;
+    totalAmountPaid += amount;
+  });
+
+  // Update the hidden input field
+  const totalAmountPaidInput = document.getElementById("totalAmountPaid");
+  if (totalAmountPaidInput) {
+    totalAmountPaidInput.value = totalAmountPaid;
+  }
+
+  // Also update visible "Total Amount Paid"
+  const amountPaidDisplay = document.getElementById("amountPaid");
+  if (amountPaidDisplay) {
+    amountPaidDisplay.value = totalAmountPaid.toFixed(2);
+  }
+
+  // Get the Total Payable Amount (from the calculated field)
+  const totalPayableInput = document.getElementById("payableAmount");
+  const totalPayable = parseFloat(totalPayableInput?.value) || 0;
+
+  // Calculate and update the Amount Due
+  const totalAmountDue = totalPayable - totalAmountPaid;
+  const amountDueInput = document.getElementById("amountDue");
+  if (amountDueInput) {
+    amountDueInput.value = totalAmountDue.toFixed(2);
+  }
+}
+
+
+// Function to remove a payment transaction field
+function removeField(button) {
+  const field = button.parentElement;
+  field.remove();
+  updateTotalAmountPaid(); // Update the total amount paid when a transaction is removed
+}
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const totalAmountInput = document.getElementById("totalAmount");
+  const discountPercentageCheckbox = document.getElementById("discountPercentage");
+  const discountAmountCheckbox = document.getElementById("discountAmount");
+  const discountPercentageInput = document.getElementById("discountPercentValue");
+  const discountAmountInput = document.getElementById("discountAmountValue");
+  const payableAmountInput = document.getElementById("payableAmount");
+
+  // Make readonly explicitly
+  payableAmountInput.readOnly = true;
+
+  // Show/hide discount inputs
+  discountPercentageCheckbox.addEventListener("change", function () {
+    document.getElementById("detail_discountPercentage").style.display = this.checked ? "block" : "none";
+    calculatePayable();
+  });
+
+  discountAmountCheckbox.addEventListener("change", function () {
+    document.getElementById("detail_discountAmount").style.display = this.checked ? "block" : "none";
+    calculatePayable();
+  });
+
+  // Recalculate on input change
+  [totalAmountInput, discountPercentageInput, discountAmountInput].forEach(input => {
+    input.addEventListener("input", calculatePayable);
+  });
+
+  function calculatePayable() {
+    let total = parseFloat(totalAmountInput.value) || 0;
+    let discountPercent = discountPercentageCheckbox.checked ? parseFloat(discountPercentageInput.value) || 0 : 0;
+    let discountAmount = discountAmountCheckbox.checked ? parseFloat(discountAmountInput.value) || 0 : 0;
+
+    let percentDiscountValue = total * (discountPercent / 100);
+    let payable = total - percentDiscountValue - discountAmount;
+
+    payableAmountInput.value = payable.toFixed(2);
+  }
+});
+
+  </script>
+  <!-- THIS IS THE LOADER SCRIPT -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.querySelector("form");
+      const loaderOverlay = document.getElementById("loaderOverlay");
+
+      form.addEventListener("submit", function () {
+        loaderOverlay.style.display = "flex";
+      });
+    });
+  </script>
+  <!-- This script is for the functionality asked by the user "When pressed ENTER - 
+   Cursor should move to the next input field" -->
+<!-- <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.querySelector("form");
+  const focusableElements = Array.from(
+    form.querySelectorAll("input:not([type=checkbox]):not([type=file]):not([type=hidden]), select, textarea")
+  ).filter(el => !el.disabled && el.offsetParent !== null);
+
+  form.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      const activeElement = document.activeElement;
+      const currentIndex = focusableElements.indexOf(activeElement);
+      if (currentIndex > -1 && currentIndex < focusableElements.length - 1) {
+        e.preventDefault(); // Prevent form submission
+        focusableElements[currentIndex + 1].focus();
+      }
+    }
+  });
+});
+</script> -->
+{% endblock %}

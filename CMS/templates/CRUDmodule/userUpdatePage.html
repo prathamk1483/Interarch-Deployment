@@ -1,0 +1,397 @@
+{% extends 'CRUDmodule/base.html' %}
+{% block style %}
+  <style>
+    .form-section {
+      background-color: #f8f9fa;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .form-section h3 {
+      color: #0d6efd;
+      margin-bottom: 20px;
+    }
+    .dynamic-field {
+      margin-bottom: 10px;
+    }
+    .payment-mode {
+      margin-bottom: 10px;
+    }
+  </style>
+{% endblock %}
+
+{% block body %}
+  {% load custom_filters %}
+  <div class="container my-5">
+    <h1 class="text-center mb-4">Client Profile Update Form</h1>
+    <form action="{% url 'updateClientInfo' data.id %}" method="POST">
+      {% csrf_token %}
+      
+      <!-- Customer Details Section -->
+      <div class="form-section">
+        <h3>Client Details</h3>
+        <input type="checkbox" name="pendingProject" class="btn-check" id="btncheck1" autocomplete="off" {% if data.projectStatus %} checked {% endif %}>
+        <label class="btn btn-outline-primary" for="btncheck1">Project is Pending</label>
+
+        <input type="checkbox" name="pendingPayment" class="btn-check" id="btncheck2" autocomplete="off" {% if data.paymentStatus %} checked {% endif %}>
+        <label class="btn btn-outline-primary" for="btncheck2">Payment is Pending</label>
+
+        <br>
+        <br>
+        <div class="row">
+          <div class="col-md-4">
+            <label for="full_names" class="form-label">Names - ( Comma "," separated )</label>
+            <input type="text" class="form-control" id="fullNames" name="full_names" value="{{ data.name }}" required>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <label for="referredBy" class="form-label">Referred By</label>
+            <input type="text" class="form-control" name="customerRefferedBy" id="referredBy" value="{{ data.referredBy }}">
+          </div>
+        </div>
+      </div>
+
+      <!-- Email Section -->
+      <div class="form-section">
+        <h3>Emails</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <label for="primaryEmail" class="form-label">Email - ( Comma "," separated )</label>
+            <input type="text" class="form-control" id="primaryEmail" name="primary_email" value="{{ data.email }}" required>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phone Number Section -->
+      <div class="form-section">
+        <h3>Contact Numbers</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <label for="primaryPhone" class="form-label">Enter Phone numbers - ( Comma "," separated )</label>
+            <input type="text" class="form-control" id="primaryPhone" name="phone_numbers" value="{{data.PhoneNo }}" required>
+          </div>
+        </div>
+      </div>
+
+      <!-- Address Section -->
+      <div class="form-section">
+        <h3>Address</h3>
+        <div class="row">
+          <div class="col-md-12">
+            <label for="completeAddress" class="form-label">Complete Address</label>
+            <textarea class="form-control" autocomplete="off" id="completeAddress" name="complete_address" rows="3">{{ data.Address.completeAddress }}</textarea>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-4">
+            <label for="city" class="form-label">City</label>
+            <input type="text" class="form-control" name="city" id="city" value="{{ data.Address.city }}">
+          </div>
+          <div class="col-md-4">
+            <label for="state" class="form-label">State</label>
+            <input type="text" class="form-control" name="state" id="state" value="{{ data.Address.state }}">
+          </div>
+          <div class="col-md-4">
+            <label for="pincode" class="form-label">Pincode</label>
+            <input type="text" class="form-control" name="pincode" id="pincode" value="{{ data.Address.pincode }}">
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-4">
+            <label for="landmark" class="form-label">Landmark</label>
+            <input type="text" class="form-control" name="landmark" id="landmark" value="{{ data.Address.landmark }}">
+          </div>
+        </div>
+      </div>
+
+      <!-- Plot Details Section -->
+      <div class="form-section">
+        <h3>Plot Details</h3>
+        <div class="row">
+          <div class="col-md-4">
+            <label for="plotNumber" class="form-label">Plot Number</label>
+            <input type="text" class="form-control" name="customerPlotNumber" id="plotNumber" value="{{ data.plotDetails.plotNumber }}">
+          </div>
+          <div class="col-md-4">
+            <label for="plotArea" class="form-label">Plot Area (sq. ft.)</label>
+            <input type="number" class="form-control" name="plot_area" id="plotArea" value="{{ data.plotDetails.plotArea }}">
+          </div>
+        </div>
+      
+        <div class="row mt-4">
+          <div class="col-md-4">
+            <label for="plotLengthEast" class="form-label">Plot Length (East)</label>
+            <input type="text" class="form-control" name="plotEast" id="plotLengthEast" value="{{ data.plotDetails.plotDimensions.east }}">
+          </div>
+          <div class="col-md-4">
+            <label for="plotLengthWest" class="form-label">Plot Length (West)</label>
+            <input type="text" class="form-control" name="plotWest" id="plotLengthWest" value="{{ data.plotDetails.plotDimensions.west }}">
+          </div>
+          <div class="col-md-4">
+            <label for="plotLengthNorth" class="form-label">Plot Length (North)</label>
+            <input type="text" class="form-control" name="plotNorth" id="plotLengthNorth" value="{{ data.plotDetails.plotDimensions.north }}">
+          </div>
+          <div class="col-md-4 mt-3">
+            <label for="plotLengthSouth" class="form-label">Plot Length (South)</label>
+            <input type="text" class="form-control" name="plotSouth" id="plotLengthSouth" value="{{ data.plotDetails.plotDimensions.south }}">
+          </div>
+      
+          <div class="col-md-4 mt-3">
+            <label for="roadDirection" class="form-label">Road Direction</label>
+            <select class="form-select" name="roadDirection" id="roadDirection">
+              <option value="{{ data.plotDetails.roadDirection }}" selected>{{ data.plotDetails.roadDirection }}</option>
+              <option value="North">North</option>
+              <option value="South">South</option>
+              <option value="East">East</option>
+              <option value="West">West</option>
+              <option value="North-East">North-East</option>
+              <option value="North-West">North-West</option>
+              <option value="South-East">South-East</option>
+              <option value="South-West">South-West</option>
+            </select>
+          </div>
+      
+          <div class="col-md-4 mt-3">
+            <label for="roadWidth" class="form-label">Road Width</label>
+            <input type="text" class="form-control" name="roadWidth" id="roadWidth" value="{{ data.plotDetails.roadWidth }}">
+          </div>
+        </div>
+      </div>
+
+      <!-- Client Requirements Section -->
+      <div class="form-section">
+        <h3>Client Requirements</h3>
+        <input type="text" class="form-control" name="requirements" value="{{ data.clientRequirements }}">
+      </div>
+
+      <!-- Services Section -->
+      <div class="form-section">
+        <h3>Services</h3>
+        <div class="row">
+           
+          {% for service, is_checked in data.Services.services.items %}
+            <div class="col-md-15">
+              <div class="form-check">
+                <input class="form-check-input service-checkbox" type="checkbox" name="{{ service }}" id="s{{ loop.index }}" {% if is_checked %} checked {% endif %}>
+                <label class="form-check-label" for="s{{ loop.index }}">{{ service }}</label>
+                <div class="service-detail mt-2" id="detail_s{{ loop.index }}">
+                  <input type="text" class="form-control" name="{{ service }}_detail" value="{{ data.Services.details | get_item:service }}" placeholder="Enter details for {{ service }}">
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="form-section">
+        <h3>Special Notes</h3>
+        <div class="form-floating">
+          <textarea name="specialNotes" class="form-control" placeholder="Notes" id="floatingTextarea2" style="height: 100px">{{ data.specialNotes }}</textarea>
+          <label for="floatingTextarea2">Notes</label>
+        </div>
+      </div>
+      <!-- Payment Details Section -->
+      <div class="form-section">
+        <h3>Payment Details</h3>
+        {% for payment in data.paymentDetails.transactions %}
+          <div class="payment-mode">
+            <div class="mb-3">
+              <label class="form-label">Payment Mode</label>
+              <select class="form-select" name="paymentMode">
+                <option value="UPI" {% if payment.mode == "UPI" %}selected{% endif %}>UPI</option>
+                <option value="Cash" {% if payment.mode == "Cash" %}selected{% endif %}>Cash</option>
+                <option value="BankTransfer" {% if payment.mode == "BankTransfer" %}selected{% endif %}>Bank Transfer</option>
+                <option value="Cheque" {% if payment.mode == "Cheque" %}selected{% endif %}>Cheque</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Payment Section -->
+          <div class="row mt-3">
+            <div class="col-md-4">
+              <label for="paymentStatuss" class="form-label">Payment Status</label>
+              <select class="form-select" name="paymentStatuss" readonly>
+                <option value="Pending" {% if payment.paymentStatus == "Pending" %}selected{% endif %}>Pending</option>
+                <option value="Completed" {% if payment.paymentStatus == "Completed" %}selected{% endif %}>Completed</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label for="paymentDates" class="form-label">Payment Date</label>
+              <input type="date" class="form-control" name="paymentDates" value="{{ payment.paymentDate }}">
+            </div>
+            <div class="col-md-4">
+              <label for="paymentAmounts" class="form-label">Payment Amount</label>
+              <input type="number" class="form-control" name="paymentAmounts" value="{{ payment.amountPaid }}" oninput="updateTotalAmountPaid()">
+            </div>
+          </div>
+        {% endfor %}
+
+        <div id="paymentTransactionsContainer">
+          <!-- Dynamic fields for payment transactions will be added here -->
+        </div>
+
+        <button type="button" class="btn btn-secondary btn-sm mt-2" onclick="addPaymentTransaction()">Add Payment</button>
+        <!-- Hidden input for total amount paid -->
+        <input type="hidden" id="totalAmountPaid" name="totalAmountPaid" value="0">
+      </div>
+      <div class="row mt-4">
+        <div class="col-md-6">
+          <label for="payableAmount" class="form-label">Total Payable Amount:</label>
+          <input type="text" class="form-control" name="customerTotalPayableAmount" value={{ data.paymentDetails.totalPayableAmount }} id="payableAmount" readonly>
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-md-6">
+          <label for="payableAmount" class="form-label">Total Amount Paid:</label>
+          <input type="text" class="form-control" name="TotalAmountPaids" value={{ data.paymentDetails.totalAmountPaid }} id="amountPaid" readonly>
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-md-6">
+          <label for="payableAmount" class="form-label">Total Amount Due:</label>
+          <input type="text" class="form-control" name="TotalAmountDue" value={{ data.paymentDetails.totalAmountDue }} id="amountDue" readonly>
+        </div>
+      </div>
+
+
+
+      <button type="submit" class="btn btn-primary">Update Profile</button>
+    </form>
+  </div>
+{% endblock %}
+
+{% block script %}
+  <script>
+let transactionCount = 0;
+
+function addPaymentTransaction() {
+  transactionCount++;
+
+  const container = document.getElementById('paymentTransactionsContainer');
+
+  const html = `
+    <div class="payment-mode mt-4">
+      <div class="mb-3">
+        <label class="form-label">Payment Mode</label>
+        <select class="form-select" name="paymentMode">
+          <option value="UPI">UPI</option>
+          <option value="Cash">Cash</option>
+          <option value="BankTransfer">Bank Transfer</option>
+          <option value="Cheque">Cheque</option>
+        </select>
+      </div>
+      <div class="row mt-3">
+        <div class="col-md-4">
+          <label class="form-label">Payment Status</label>
+          <select class="form-select" name="paymentStatus">
+            <option value="Pending">Pending</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Payment Date</label>
+          <input type="date" class="form-control" name="paymentDate">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Payment Amount</label>
+          <input type="number" class="form-control" name="paymentAmount" oninput="updateTotalAmountPaid()">
+        </div>
+      </div>
+    </div>
+  `;
+
+  container.insertAdjacentHTML('beforeend', html);
+}
+
+
+// Function to calculate and update the total amount paid
+function updateTotalAmountPaid() {
+  // Select all relevant payment amount fields (existing + dynamic)
+  const staticInputs = document.querySelectorAll('input[name="paymentAmounts"]');
+  const dynamicInputs = document.querySelectorAll('input[name="paymentAmount"]');
+  const allInputs = [...staticInputs, ...dynamicInputs];
+
+  let totalAmountPaid = 0;
+
+  // Sum all payment amounts
+  allInputs.forEach(input => {
+    const amount = parseFloat(input.value) || 0;
+    totalAmountPaid += amount;
+  });
+
+  // Update the hidden input field
+  const totalAmountPaidInput = document.getElementById("totalAmountPaid");
+  if (totalAmountPaidInput) {
+    totalAmountPaidInput.value = totalAmountPaid.toFixed(2);
+  }
+
+  // Update visible "Total Amount Paid"
+  const amountPaidDisplay = document.getElementById("amountPaid");
+  if (amountPaidDisplay) {
+    amountPaidDisplay.value = totalAmountPaid.toFixed(2);
+  }
+
+  // Get the Total Payable Amount
+  const totalPayableInput = document.getElementById("payableAmount");
+  const totalPayable = parseFloat(totalPayableInput?.value) || 0;
+
+  // Calculate and update the Amount Due
+  const totalAmountDue = totalPayable - totalAmountPaid;
+  const amountDueInput = document.getElementById("amountDue");
+  if (amountDueInput) {
+    amountDueInput.value = totalAmountDue.toFixed(2);
+  }
+}
+  // Automatically recalculate when DOM is loaded
+  document.addEventListener("DOMContentLoaded", function () {
+    // Recalculate once after page load
+    updateTotalAmountPaid();
+
+    // Watch for changes on dynamically added payment fields
+    const paymentContainer = document.getElementById("paymentTransactionsContainer");
+    const observer = new MutationObserver(() => {
+      const allInputs = document.querySelectorAll('input[name="paymentAmounts"]');
+      allInputs.forEach(input => {
+        input.removeEventListener("input", updateTotalAmountPaid);
+        input.addEventListener("input", updateTotalAmountPaid);
+      });
+    });
+
+    observer.observe(paymentContainer, { childList: true, subtree: true });
+
+    // Add initial event listeners to any existing inputs
+    const initialInputs = document.querySelectorAll('input[name="paymentAmounts"]');
+    initialInputs.forEach(input => {
+      input.addEventListener("input", updateTotalAmountPaid);
+    });
+  });
+function removeField(button) {
+  const field = button.parentElement;
+  field.remove();
+  updateTotalAmountPaid(); // Update the total amount paid when a transaction is removed
+}
+</script>
+
+
+<!-- SOME RISKY CODE BY AI  -->
+ <script>
+  document.addEventListener("DOMContentLoaded", () => {
+  // normalize your existing (static) fields
+  document
+    .querySelectorAll("select[name='paymentStatuss']")
+    .forEach(el => el.name = "paymentStatus");
+
+  document
+    .querySelectorAll("input[name='paymentDates']")
+    .forEach(el => el.name = "paymentDate");
+
+  document
+    .querySelectorAll("input[name='paymentAmounts']")
+    .forEach(el => el.name = "paymentAmount");
+  
+  // now your addPaymentTransaction() can remain as-is
+});
+
+ </script>
+{% endblock %}
