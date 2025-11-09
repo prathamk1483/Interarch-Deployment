@@ -1,3 +1,30 @@
+﻿
+# ============================
+#    ORCONIX BRANDING HEADER
+# ============================
+
+Write-Host ""
+Write-Host "           ██████╗ ██████╗  ██████╗ ██████╗ ███╗   ██╗██╗██╗  ██╗" -ForegroundColor Magenta
+Write-Host "          ██ ╔═██═╗██╔══██╗██╔════╝ ██╔══██╗████╗  ██║██║╚██╗██╔╝" -ForegroundColor Magenta
+Write-Host "          ██ ║ ██ ║██████╔╝██║      ██║  ██║██╔██╗ ██║██║ ╚███╔╝ " -ForegroundColor DarkMagenta
+Write-Host "          ██ ║ ██ ║██╔══██╗██║      ██║  ██║██║╚██╗██║██║ ██╔██╗ " -ForegroundColor DarkMagenta
+Write-Host "           ██████ ║██║  ██║╚██████╔╝██████╔╝██║ ╚████║██║██╔╝ ██╗" -ForegroundColor Magenta
+Write-Host "           ╚══════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝" -ForegroundColor DarkMagenta
+Write-Host ""
+Write-Host "                    ⬢  ORCONIX TECHNOLOGIES  ⬢" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "===================================================================" -ForegroundColor DarkGray
+Start-Sleep -Seconds 2
+
+
+
+
+
+
+
+
+
+
 # --- Start of Script ---
 
 Write-Host "`n=== Moving to Target Folder ===`n" -ForegroundColor Cyan
